@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KMJ TIPS — Key Panel</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: radial-gradient(1200px 600px at 50% -10%, #2A1545 0%, #0F0620 60%) fixed, #0F0620;
+    color: #EDE7F6; font-family: 'Segoe UI', Arial, sans-serif; padding: 16px; min-height: 100vh;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  header {
+    text-align: center; padding: 30px 12px; border-radius: 18px; margin-bottom: 18px;
+    background: linear-gradient(160deg, #241040 0%, #160A2C 100%);
+    border: 1px solid #5A3A9A;
+    box-shadow: 0 12px 0 #0A0414, 0 20px 40px rgba(0,0,0,.6), inset 0 2px 0 rgba(255,255,255,.12);
+  }
+  header h1 {
+    color: #FFD700; font-size: 34px; letter-spacing: 4px; font-weight: 900;
+    text-shadow: 0 2px 0 #B37A00, 0 4px 0 #7A5200, 0 6px 0 #4A3200, 0 10px 18px rgba(0,0,0,.7);
+  }
+  header p { color: #B388FF; font-size: 13px; margin-top: 10px; letter-spacing: 1px; }
+  .card {
+    background: linear-gradient(170deg, #1E0E38 0%, #150A28 100%);
+    border: 1px solid #4A2B7A; border-radius: 16px; padding: 18px; margin-bottom: 16px;
+    box-shadow: 0 8px 0 #0A0414, 0 14px 28px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.08);
+  }
+  .card h2 { color: #FFD700; font-size: 17px; margin-bottom: 12px;
+    text-shadow: 0 2px 0 #4A3200; }
+  label { display: block; font-size: 13px; color: #B388FF; margin: 10px 0 4px; font-weight: 600; }
+  input[type=text], input[type=password], input[type=number] {
+    width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid #4A2B7A;
+    background: #241240; color: #fff; font-size: 15px;
+    box-shadow: inset 0 3px 6px rgba(0,0,0,.5);
+  }
+  input:focus { outline: none; border-color: #FFD700; box-shadow: inset 0 3px 6px rgba(0,0,0,.5), 0 0 10px rgba(255,215,0,.35); }
+  .row { display: flex; gap: 10px; } .row > div { flex: 1; }
+  /* ---- 3D buttons ---- */
+  .btn3d {
+    display: inline-block; border: none; cursor: pointer; font-weight: 900; font-size: 16px;
+    letter-spacing: 1px; color: #3A2400; padding: 14px 28px; border-radius: 12px; margin-top: 14px;
+    background: linear-gradient(180deg, #FFE082 0%, #FFD700 45%, #FFB300 100%);
+    box-shadow: 0 6px 0 #B37A00, 0 10px 22px rgba(0,0,0,.55), inset 0 2px 0 rgba(255,255,255,.5);
+    text-shadow: 0 1px 0 rgba(255,255,255,.4);
+    transition: transform .07s, box-shadow .07s;
+  }
+  .btn3d:active { transform: translateY(5px);
+    box-shadow: 0 1px 0 #B37A00, 0 4px 10px rgba(0,0,0,.55), inset 0 2px 0 rgba(255,255,255,.5); }
+  .btn3d.purple { color: #fff; text-shadow: 0 1px 0 rgba(0,0,0,.4);
+    background: linear-gradient(180deg, #B388FF 0%, #7B1FA2 55%, #5A1080 100%);
+    box-shadow: 0 6px 0 #3A0A5A, 0 10px 22px rgba(0,0,0,.55), inset 0 2px 0 rgba(255,255,255,.35); }
+  .btn3d.purple:active { transform: translateY(5px);
+    box-shadow: 0 1px 0 #3A0A5A, 0 4px 10px rgba(0,0,0,.55), inset 0 2px 0 rgba(255,255,255,.35); }
+  .btn3d.small { padding: 8px 14px; font-size: 13px; margin-top: 0; border-radius: 9px;
+    box-shadow: 0 4px 0 #B37A00, 0 7px 14px rgba(0,0,0,.5), inset 0 2px 0 rgba(255,255,255,.5); }
+  .btn3d.small:active { transform: translateY(3px); box-shadow: 0 1px 0 #B37A00; }
+  .btn3d.purple.small { box-shadow: 0 4px 0 #3A0A5A, 0 7px 14px rgba(0,0,0,.5), inset 0 2px 0 rgba(255,255,255,.35); }
+  .btn3d.purple.small:active { transform: translateY(3px); box-shadow: 0 1px 0 #3A0A5A; }
+  .keybox {
+    background: #0A0414; border: 2px dashed #FFD700; border-radius: 10px; padding: 14px;
+    word-break: break-all; font-family: monospace; font-size: 13px; color: #FFD700; margin-top: 14px;
+    box-shadow: inset 0 3px 10px rgba(0,0,0,.7);
+  }
+  .preview { margin-top: 10px; font-size: 13px; color: #B388FF; }
+  .preview b { color: #FFD700; }
+  .ok { color: #69F0AE; font-weight: bold; } .bad { color: #FF5252; font-weight: bold; }
+  /* ---- dashboard stats ---- */
+  .stats { display: flex; gap: 10px; margin-bottom: 12px; }
+  .stat { flex: 1; text-align: center; padding: 14px 6px; border-radius: 12px;
+    background: linear-gradient(180deg, #2A1545, #1A0B2E); border: 1px solid #4A2B7A;
+    box-shadow: 0 5px 0 #0A0414, inset 0 1px 0 rgba(255,255,255,.08); }
+  .stat .n { font-size: 26px; font-weight: 900; color: #FFD700; text-shadow: 0 3px 0 #4A3200; }
+  .stat .t { font-size: 11px; color: #B388FF; margin-top: 4px; letter-spacing: 1px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; }
+  th, td { padding: 9px 6px; border-bottom: 1px solid #2A1545; text-align: left; vertical-align: top; }
+  th { color: #FFD700; font-size: 11px; letter-spacing: 1px; }
+  .mono { font-family: monospace; word-break: break-all; }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 900;
+    box-shadow: 0 2px 0 rgba(0,0,0,.4); }
+  .badge.on { background: linear-gradient(180deg,#2E7D32,#1B5E20); color: #A5FFB8; }
+  .badge.off { background: linear-gradient(180deg,#8A2323,#5D1A1A); color: #FF9A9A; }
+  .hint { font-size: 12px; color: #8A7AA8; margin-top: 8px; line-height: 1.6; }
+  .topbar { display: flex; justify-content: flex-end; margin-bottom: 10px; }
+  .iconbtn { background: #241240; border: 1px solid #4A2B7A; color: #FFD700; border-radius: 10px;
+    padding: 8px 12px; cursor: pointer; font-size: 16px;
+    box-shadow: 0 4px 0 #0A0414; transition: transform .07s; }
+  .iconbtn:active { transform: translateY(3px); box-shadow: none; }
+  .filter { margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <button class="iconbtn" id="mutebtn" onclick="toggleMute()" title="Sound on/off">🔊</button>
+  </div>
+
+  <header>
+    <h1>⚡ KMJ TIPS</h1>
+    <p>KEY PANEL &bull; ONE-DEVICE LICENSE GENERATOR</p>
+  </header>
+
+  <!-- DASHBOARD -->
+  <div class="card">
+    <h2>📊 Dashboard</h2>
+    <div class="stats">
+      <div class="stat"><div class="n" id="stTotal">0</div><div class="t">TOTAL KEYS</div></div>
+      <div class="stat"><div class="n" id="stActive" style="color:#69F0AE;text-shadow:0 3px 0 #0A3A1A">0</div><div class="t">ACTIVE</div></div>
+      <div class="stat"><div class="n" id="stExp" style="color:#FF5252;text-shadow:0 3px 0 #3A0A0A">0</div><div class="t">EXPIRED</div></div>
+    </div>
+    <div class="hint">Record un keys ka hai jo tumne banayi hain (is browser me saved).</div>
+  </div>
+
+  <!-- 1. UNLOCK -->
+  <div class="card">
+    <h2>🔐 Step 1 — Master Secret se Unlock</h2>
+    <label>Master Secret (sirf tumhare paas)</label>
+    <input type="password" id="master" placeholder="Master secret yahan dalo" autocomplete="off">
+    <button class="btn3d purple" onclick="unlock()">🔓 UNLOCK</button>
+    <div class="hint">
+      <input type="checkbox" id="remember"> Is browser me yaad rakho<br>
+      <span id="lockstate" class="bad">🔴 LOCKED — pehle unlock karo</span><br>
+      Panel ki file me secret save NAHI hota. Bina secret ke koi key nahi bana sakta.
+    </div>
+  </div>
+
+  <!-- 2. GENERATOR -->
+  <div class="card">
+    <h2>🔑 Step 2 — Key Generate Karo</h2>
+    <div class="row">
+      <div><label>Days</label><input type="number" id="days" value="30" min="0" oninput="updPreview()"></div>
+      <div><label>Hours</label><input type="number" id="hours" value="0" min="0" max="23" oninput="updPreview()"></div>
+    </div>
+    <label>Plan / Note (optional)</label>
+    <input type="text" id="plan" value="VIP" maxlength="20">
+    <label>📱 Device ID — buyer ke app me jo ID dikhe wahi dalo</label>
+    <input type="text" id="devid" placeholder="Buyer ki Device ID — khaali = pehli device auto-lock">
+    <div class="preview">⏰ Expire hoga: <b id="expPreview">—</b> (IST)</div>
+    <button class="btn3d" onclick="genKey()">⚡ GENERATE KEY</button>
+    <div id="out" style="display:none">
+      <div class="keybox" id="keyout"></div>
+      <button class="btn3d purple small" style="margin-top:10px" onclick="copyKey()">📋 COPY KEY</button>
+    </div>
+    <div class="hint">Buyer app khole → usko uski <b>Device ID</b> dikhegi → wo tumhe bhejega → yahan dal ke key banao = key sirf usi phone pe chalegi.</div>
+  </div>
+
+  <!-- 3. VERIFY -->
+  <div class="card">
+    <h2>🔍 Key Check Karo</h2>
+    <label>Key paste karo</label>
+    <input type="text" id="vkey" placeholder="ZYROX-...">
+    <button class="btn3d purple small" style="margin-top:10px" onclick="verifyKey()">VERIFY</button>
+    <div class="preview" id="vout"></div>
+  </div>
+
+  <!-- 4. HISTORY -->
+  <div class="card">
+    <h2>📜 Saari Keys</h2>
+    <input type="text" id="q" class="filter" placeholder="🔍 Search: plan / device / key..." oninput="renderHist()">
+    <div style="overflow-x:auto"><div id="hist"></div></div>
+    <button class="btn3d purple small" style="margin-top:10px" onclick="clearHist()">🗑 Sab delete karo</button>
+  </div>
+
+  <p class="hint" style="text-align:center;padding-bottom:20px">MADE BY KMJ TIPS ⚡</p>
+</div>
+
+<script>
+const te = new TextEncoder();
+let HMKEY = null, LASTKEY = '';
+
+/* ---------- sound effects (WebAudio, no files needed) ---------- */
+let AC = null, MUTED = localStorage.getItem('kmj_mute') === '1';
+function ac() {
+  if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
+  if (AC.state === 'suspended') AC.resume();
+  return AC;
+}
+function tone(f, d, type, v, when) {
+  if (MUTED) return;
+  try {
+    const a = ac(), o = a.createOscillator(), g = a.createGain();
+    o.type = type || 'sine'; o.frequency.value = f;
+    const t = a.currentTime + (when || 0);
+    g.gain.setValueAtTime(v || 0.12, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + d);
+    o.connect(g); g.connect(a.destination);
+    o.start(t); o.stop(t + d);
+  } catch (e) {}
+}
+function sfx(n) {
+  if (n === 'click') tone(660, 0.07, 'square', 0.05);
+  else if (n === 'gen') { tone(523, 0.12, 'sine', 0.12); tone(784, 0.2, 'sine', 0.12, 0.1); }
+  else if (n === 'err') tone(180, 0.25, 'sawtooth', 0.09);
+  else if (n === 'copy') tone(880, 0.06, 'sine', 0.07);
+}
+function toggleMute() {
+  MUTED = !MUTED;
+  localStorage.setItem('kmj_mute', MUTED ? '1' : '0');
+  document.getElementById('mutebtn').textContent = MUTED ? '🔇' : '🔊';
+  if (!MUTED) sfx('click');
+}
+document.addEventListener('click', e => { if (e.target.tagName === 'BUTTON') sfx('click'); });
+
+/* ---------- crypto (app ke jaisa) ---------- */
+function b64url(bytes) {
+  const b = new Uint8Array(bytes);
+  let s = '';
+  for (let i = 0; i < b.length; i++) s += String.fromCharCode(b[i]);
+  return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+function ist(ts) {
+  return new Date(ts).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata',
+    day: '2-digit', month: 'short', year: 'numeric',
+    hour: '2-digit', minute: '2-digit', hour12: true });
+}
+function leftStr(ms) {
+  if (ms <= 0) return 'expired';
+  const m = Math.floor(ms / 60000), h = Math.floor(m / 60), d = Math.floor(h / 24);
+  if (d > 0) return d + 'd ' + (h % 24) + 'h bache';
+  if (h > 0) return h + 'h ' + (m % 60) + 'm bache';
+  return m + 'm bache';
+}
+
+async function unlock() {
+  const m = document.getElementById('master').value;
+  if (!m) { sfx('err'); alert('Master secret dalo'); return; }
+  HMKEY = await crypto.subtle.importKey('raw', te.encode(m),
+    { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  document.getElementById('lockstate').innerHTML = '<span class="ok">🟢 UNLOCKED — key generate kar sakte ho</span>';
+  if (document.getElementById('remember').checked) localStorage.setItem('zka_master', m);
+  else localStorage.removeItem('zka_master');
+  sfx('gen');
+}
+window.addEventListener('load', () => {
+  document.getElementById('mutebtn').textContent = MUTED ? '🔇' : '🔊';
+  const s = localStorage.getItem('zka_master');
+  if (s) { document.getElementById('master').value = s;
+    document.getElementById('remember').checked = true; unlock(); }
+  updPreview(); renderHist();
+});
+
+function updPreview() {
+  const d = Math.max(0, +document.getElementById('days').value || 0);
+  const h = Math.max(0, +document.getElementById('hours').value || 0);
+  document.getElementById('expPreview').textContent =
+    ist(Date.now() + (d * 86400 + h * 3600) * 1000);
+}
+async function signPayload(p) {
+  return b64url(await crypto.subtle.sign('HMAC', HMKEY, te.encode(p)));
+}
+
+async function genKey() {
+  if (!HMKEY) { sfx('err'); alert('Pehle Step 1 me master secret se unlock karo'); return; }
+  const d = Math.max(0, +document.getElementById('days').value || 0);
+  const h = Math.max(0, +document.getElementById('hours').value || 0);
+  if (d <= 0 && h <= 0) { sfx('err'); alert('Days ya Hours me se kuch to dalo'); return; }
+  const exp = Math.floor(Date.now() / 1000) + d * 86400 + h * 3600;
+  const dev = document.getElementById('devid').value.trim();
+  const plan = (document.getElementById('plan').value.trim() || 'VIP').slice(0, 20);
+  const payload = JSON.stringify({ v: 1, exp: exp, dev: dev, plan: plan });
+  const p = b64url(te.encode(payload));
+  const key = 'ZYROX-' + p + '.' + await signPayload(p);
+  LASTKEY = key;
+  document.getElementById('keyout').textContent = key;
+  document.getElementById('out').style.display = 'block';
+  saveHist({ key, plan, dev: dev || '(auto-lock)', created: Date.now(), exp: exp * 1000 });
+  sfx('gen');
+}
+function copyKey() {
+  navigator.clipboard.writeText(LASTKEY).then(() => { sfx('copy'); alert('Key copy ho gayi ✅'); });
+}
+
+async function verifyKey() {
+  const out = document.getElementById('vout');
+  if (!HMKEY) { sfx('err'); out.innerHTML = '<span class="bad">Pehle unlock karo</span>'; return; }
+  const k = document.getElementById('vkey').value.trim();
+  if (!k.startsWith('ZYROX-')) { sfx('err'); out.innerHTML = '<span class="bad">❌ Galat format</span>'; return; }
+  const body = k.slice(6), dot = body.lastIndexOf('.');
+  if (dot <= 0) { sfx('err'); out.innerHTML = '<span class="bad">❌ Galat format</span>'; return; }
+  const p = body.slice(0, dot), sig = body.slice(dot + 1);
+  if ((await signPayload(p)) !== sig) { sfx('err'); out.innerHTML = '<span class="bad">❌ Signature galat — nakli key</span>'; return; }
+  const pl = JSON.parse(atob(p.replace(/-/g, '+').replace(/_/g, '/')));
+  const left = pl.exp * 1000 - Date.now();
+  sfx(left > 0 ? 'gen' : 'err');
+  out.innerHTML = (left > 0 ? '<span class="ok">✅ ASLI KEY</span>' : '<span class="bad">⌛ EXPIRED</span>') +
+    '<br>Plan: <b>' + esc(pl.plan) + '</b> &bull; Expire: <b>' + ist(pl.exp * 1000) + '</b> (' + leftStr(left) + ')' +
+    '<br>Device: <b>' + esc(pl.dev || '(pehli device se auto-lock)') + '</b>';
+}
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+
+/* ---------- history + dashboard ---------- */
+function getHist() { try { return JSON.parse(localStorage.getItem('zka_history') || '[]'); } catch (e) { return []; } }
+function saveHist(e) { const h = getHist(); h.unshift(e);
+  localStorage.setItem('zka_history', JSON.stringify(h.slice(0, 300))); renderHist(); }
+function delHist(i) { sfx('click'); const h = getHist(); h.splice(i, 1);
+  localStorage.setItem('zka_history', JSON.stringify(h)); renderHist(); }
+function clearHist() { if (confirm('Saari history delete?')) { localStorage.removeItem('zka_history'); renderHist(); } }
+function copyHist(i) { navigator.clipboard.writeText(getHist()[i].key).then(() => { sfx('copy'); alert('Key copy ✅'); }); }
+function renderHist() {
+  const all = getHist(), now = Date.now();
+  const q = (document.getElementById('q').value || '').toLowerCase();
+  const h = all.filter(e => !q || (e.plan + ' ' + e.dev + ' ' + e.key).toLowerCase().includes(q));
+  document.getElementById('stTotal').textContent = all.length;
+  document.getElementById('stActive').textContent = all.filter(e => e.exp > now).length;
+  document.getElementById('stExp').textContent = all.filter(e => e.exp <= now).length;
+  const el = document.getElementById('hist');
+  if (!h.length) { el.innerHTML = '<div class="hint">' + (q ? 'Kuch nahi mila.' : 'Abhi koi key nahi banayi.') + '</div>'; return; }
+  let t = '<table><tr><th>PLAN</th><th>KEY</th><th>DEVICE ID</th><th>EXPIRE (IST)</th><th>STATUS</th><th></th></tr>';
+  h.forEach(e => {
+    const i = all.indexOf(e), on = e.exp > now;
+    t += '<tr><td><b>' + esc(e.plan) + '</b></td>' +
+      '<td class="mono">' + esc(e.key.slice(0, 16)) + '…</td>' +
+      '<td class="mono">' + esc(String(e.dev).slice(0, 16)) + '</td>' +
+      '<td>' + ist(e.exp) + '<br><span class="hint">' + leftStr(e.exp - now) + '</span></td>' +
+      '<td><span class="badge ' + (on ? 'on' : 'off') + '">' + (on ? 'ACTIVE' : 'EXPIRED') + '</span></td>' +
+      '<td><button class="btn3d purple small" onclick="copyHist(' + i + ')">Copy</button> ' +
+      '<button class="btn3d purple small" onclick="delHist(' + i + ')">✕</button></td></tr>';
+  });
+  el.innerHTML = t + '</table>';
+}
+</script>
+</body>
+</html>

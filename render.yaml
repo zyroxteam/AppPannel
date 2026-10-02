@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: zyrox-key-panel
+    env: static
+    buildCommand: ""
+    staticPublishPath: .
