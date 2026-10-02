@@ -40,6 +40,7 @@
     box-shadow: inset 0 3px 6px rgba(0,0,0,.5);
   }
   input:focus { outline: none; border-color: #FFD700; box-shadow: inset 0 3px 6px rgba(0,0,0,.5), 0 0 10px rgba(255,215,0,.35); }
+  input.bad { border-color: #FF5252; box-shadow: inset 0 3px 6px rgba(0,0,0,.5), 0 0 10px rgba(255,82,82,.4); }
   .row { display: flex; gap: 10px; } .row > div { flex: 1; }
   .btn3d {
     display: inline-block; border: none; cursor: pointer; font-weight: 900; font-size: 16px;
@@ -63,7 +64,7 @@
   .btn3d.purple.small:active { transform: translateY(3px); box-shadow: 0 1px 0 #3A0A5A; }
   .keybox {
     background: #0A0414; border: 2px dashed #00F0FF; border-radius: 10px; padding: 16px;
-    word-break: break-all; font-family: monospace; font-size: 20px; color: #00F0FF; margin-top: 14px;
+    word-break: break-all; font-family: monospace; font-size: 19px; color: #00F0FF; margin-top: 14px;
     text-align: center; letter-spacing: 2px;
     box-shadow: inset 0 3px 10px rgba(0,0,0,.7), 0 0 18px rgba(0,240,255,.25);
     text-shadow: 0 0 12px rgba(0,240,255,.8);
@@ -103,10 +104,10 @@
 
   <header>
     <h1>⚡ KMJ TIPS</h1>
-    <p>SHORT KEY PANEL &bull; DIRECT DEVICE-ID SE KEY</p>
+    <p>SHORT KEY PANEL &bull; CUSTOM KEYS FROM DEVICE ID</p>
   </header>
 
-  <div class="warn">⚠️ <b>Panel ka link PRIVATE rakho.</b> Is panel me secret embedded hai — jo bhi ye link kholega wo key bana sakta hai. GitHub repo hamesha PRIVATE rakho.</div>
+  <div class="warn">⚠️ <b>Keep this panel link PRIVATE.</b> Anyone with this link can generate keys. Keep the GitHub repo PRIVATE.</div>
 
   <!-- DASHBOARD -->
   <div class="card">
@@ -116,46 +117,50 @@
       <div class="stat"><div class="n" id="stActive" style="color:#69F0AE;text-shadow:0 3px 0 #0A3A1A">0</div><div class="t">ACTIVE</div></div>
       <div class="stat"><div class="n" id="stExp" style="color:#FF5252;text-shadow:0 3px 0 #3A0A0A">0</div><div class="t">EXPIRED</div></div>
     </div>
-    <div class="hint">Record un keys ka hai jo tumne banayi hain (is browser me saved).</div>
+    <div class="hint">Record of the keys you generated (saved in this browser).</div>
   </div>
 
   <!-- GENERATOR -->
   <div class="card">
-    <h2>🔑 Key Generate Karo — Device ID se Direct</h2>
-    <label>📱 Buyer ki Device ID (uske app me dikhegi) *</label>
-    <input type="text" id="devid" placeholder="Device ID yahan paste karo">
+    <h2>🔑 Generate Key — Direct From Device ID</h2>
+    <label>📱 Buyer's Device ID (shown in their app, COPY button) *</label>
+    <input type="text" id="devid" placeholder="Paste the Device ID here — copied from the app">
+    <div class="hint" id="devhint">The Device ID comes from the app — ask the buyer to tap COPY in the app and send it to you. Wrong IDs are rejected here.</div>
+    <label>✏️ Custom key text (optional — e.g. ONE-DAY)</label>
+    <input type="text" id="custom" placeholder="ONE-DAY" maxlength="16" oninput="updCustomPreview()">
+    <div class="preview" id="customPreview"></div>
     <div class="row">
       <div><label>Days</label><input type="number" id="days" value="30" min="0" oninput="updPreview()"></div>
       <div><label>Hours</label><input type="number" id="hours" value="0" min="0" max="23" oninput="updPreview()"></div>
     </div>
     <label>Plan / Note (optional)</label>
     <input type="text" id="plan" value="VIP" maxlength="20">
-    <div class="preview">⏰ Expire hoga: <b id="expPreview">—</b> (IST)</div>
-    <button class="btn3d" onclick="genKey()">⚡ GENERATE SHORT KEY</button>
+    <div class="preview">⏰ Expires: <b id="expPreview">—</b> (IST)</div>
+    <button class="btn3d" onclick="genKey()">⚡ GENERATE KEY</button>
     <div id="out" style="display:none">
       <div class="keybox" id="keyout"></div>
       <button class="btn3d purple small" style="margin-top:10px" onclick="copyKey()">📋 COPY KEY</button>
     </div>
-    <div class="hint">Chhoti key, type karne me easy: <b class="mono">KMJ-XXXX-XXXXXXXX</b> — sirf usi Device ID wale phone pe chalegi. Koi master secret dalne ki zaroorat nahi.</div>
+    <div class="hint">Short key, easy to type. Example: <b class="mono">KMJ-XXXX-XXXXXXXX</b> — or with custom text: <b class="mono">KMJ-ONE-DAY-XXXX-XXXXXXXX</b>. Works only on the buyer's Device ID. No master secret needed.</div>
   </div>
 
   <!-- VERIFY -->
   <div class="card">
-    <h2>🔍 Key Check Karo</h2>
-    <label>Key paste karo</label>
+    <h2>🔍 Verify Key</h2>
+    <label>Paste key</label>
     <input type="text" id="vkey" placeholder="KMJ-XXXX-XXXXXXXX">
-    <label>Device ID (signature check ke liye)</label>
-    <input type="text" id="vdev" placeholder="Device ID — khaali to sirf expiry check hogi">
+    <label>Device ID (for signature check)</label>
+    <input type="text" id="vdev" placeholder="Device ID — empty = expiry check only">
     <button class="btn3d purple small" style="margin-top:10px" onclick="verifyKey()">VERIFY</button>
     <div class="preview" id="vout"></div>
   </div>
 
   <!-- HISTORY -->
   <div class="card">
-    <h2>📜 Saari Keys</h2>
+    <h2>📜 All Keys</h2>
     <input type="text" id="q" class="filter" placeholder="🔍 Search: plan / device / key..." oninput="renderHist()">
     <div style="overflow-x:auto"><div id="hist"></div></div>
-    <button class="btn3d purple small" style="margin-top:10px" onclick="clearHist()">🗑 Sab delete karo</button>
+    <button class="btn3d purple small" style="margin-top:10px" onclick="clearHist()">🗑 Delete all</button>
   </div>
 
   <p class="hint" style="text-align:center;padding-bottom:20px">MADE BY KMJ TIPS ⚡</p>
@@ -165,7 +170,7 @@
 const te = new TextEncoder();
 let LASTKEY = '';
 
-/* secret embedded (obfuscated) — panel link private rakho */
+/* secret embedded (obfuscated) — keep the panel link private */
 const _E = "NGw9aDgeCRQfLAsJHjk8IjFuEBxiCAAzLA8vEjdjbQ0=";
 const SECRET = atob(_E).split('').map(c => String.fromCharCode(c.charCodeAt(0) ^ 0x5A)).join('');
 
@@ -202,7 +207,7 @@ function toggleMute() {
 }
 document.addEventListener('click', e => { if (e.target.tagName === 'BUTTON') sfx('click'); });
 
-/* ---------- short-key crypto (app ke jaisa) ---------- */
+/* ---------- short-key crypto (same as the app) ---------- */
 const B32A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 function b32enc(bytes) {
   const b = new Uint8Array(bytes);
@@ -220,10 +225,11 @@ function b32_4_dec(s) {
   for (let i = 0; i < 4; i++) { const b = B32A.indexOf(s[i]); if (b < 0) return -1; v = (v << 5) | b; }
   return v;
 }
-async function shortSig(dev, expH) {
+async function shortSig(dev, custom, expH) {
   const k = await crypto.subtle.importKey('raw', te.encode(SECRET),
     { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-  const sig = await crypto.subtle.sign('HMAC', k, te.encode(dev + '#' + expH));
+  const input = custom ? (dev + '#' + custom + '#' + expH) : (dev + '#' + expH);
+  const sig = await crypto.subtle.sign('HMAC', k, te.encode(input));
   return b32enc(sig).slice(0, 8);
 }
 function ist(ts) {
@@ -234,14 +240,18 @@ function ist(ts) {
 function leftStr(ms) {
   if (ms <= 0) return 'expired';
   const m = Math.floor(ms / 60000), h = Math.floor(m / 60), d = Math.floor(h / 24);
-  if (d > 0) return d + 'd ' + (h % 24) + 'h bache';
-  if (h > 0) return h + 'h ' + (m % 60) + 'm bache';
-  return m + 'm bache';
+  if (d > 0) return d + 'd ' + (h % 24) + 'h left';
+  if (h > 0) return h + 'h ' + (m % 60) + 'm left';
+  return m + 'm left';
 }
+/* Device ID validation: the app shows ANDROID_ID (usually 16 hex chars)
+   or a stored UUID. Reject anything malformed instead of making a dead key. */
+function validDev(d) { return /^[A-Za-z0-9_-]{8,64}$/.test(d); }
+function validCustom(c) { return /^[A-Z0-9]+(-[A-Z0-9]+)*$/.test(c) && c.length <= 16; }
 
 window.addEventListener('load', () => {
   document.getElementById('mutebtn').textContent = MUTED ? '🔇' : '🔊';
-  updPreview(); renderHist();
+  updPreview(); updCustomPreview(); renderHist();
 });
 
 function updPreview() {
@@ -250,49 +260,90 @@ function updPreview() {
   document.getElementById('expPreview').textContent =
     ist(Date.now() + (d * 86400 + h * 3600) * 1000);
 }
+function updCustomPreview() {
+  const c = document.getElementById('custom').value.trim().toUpperCase();
+  document.getElementById('customPreview').innerHTML = c
+    ? 'Key will look like: <b class="mono">KMJ-' + esc(c) + '-XXXX-XXXXXXXX</b>'
+    : '';
+}
 
 async function genKey() {
-  const dev = document.getElementById('devid').value.trim();
-  if (!dev) { sfx('err'); alert('Device ID dalo — buyer ke app me dikhegi'); return; }
+  const devRaw = document.getElementById('devid').value;
+  const dev = devRaw.trim();
+  const devEl = document.getElementById('devid');
+  if (!validDev(dev)) {
+    devEl.classList.add('bad'); sfx('err');
+    alert(dev ? 'Invalid Device ID — copy it exactly from the buyer\'s app (no spaces).'
+              : 'Enter the Device ID — it is shown in the buyer\'s app (COPY button).');
+    return;
+  }
+  devEl.classList.remove('bad');
+  const customRaw = document.getElementById('custom').value.trim().toUpperCase();
+  let custom = '';
+  if (customRaw) {
+    if (!validCustom(customRaw)) {
+      sfx('err');
+      alert('Custom text: A-Z, 0-9 and hyphens only, max 16 chars (e.g. ONE-DAY).');
+      return;
+    }
+    custom = customRaw;
+  }
   const d = Math.max(0, +document.getElementById('days').value || 0);
   const h = Math.max(0, +document.getElementById('hours').value || 0);
-  if (d <= 0 && h <= 0) { sfx('err'); alert('Days ya Hours me se kuch to dalo'); return; }
+  if (d <= 0 && h <= 0) { sfx('err'); alert('Enter Days or Hours.'); return; }
   const expH = Math.floor((Date.now() + (d * 86400 + h * 3600) * 1000) / 3600000);
-  const key = 'KMJ-' + b32_4(expH) + '-' + await shortSig(dev, expH);
+  const key = 'KMJ-' + (custom ? custom + '-' : '') + b32_4(expH) + '-' + await shortSig(dev, custom, expH);
   LASTKEY = key;
   document.getElementById('keyout').textContent = key;
   document.getElementById('out').style.display = 'block';
   const plan = (document.getElementById('plan').value.trim() || 'VIP').slice(0, 20);
-  saveHist({ key, plan, dev, created: Date.now(), exp: expH * 3600000 });
+  saveHist({ key, plan, dev, custom, created: Date.now(), exp: expH * 3600000 });
   sfx('gen');
 }
 function copyKey() {
-  navigator.clipboard.writeText(LASTKEY).then(() => { sfx('copy'); alert('Key copy ho gayi ✅'); });
+  navigator.clipboard.writeText(LASTKEY).then(() => { sfx('copy'); alert('Key copied ✅'); });
+}
+
+function parseShort(k) {
+  // returns {custom, expH, sig} or null
+  if (!k.startsWith('KMJ-')) return null;
+  const body = k.slice(4);
+  const ld = body.lastIndexOf('-');
+  if (ld <= 0) return null;
+  const sig = body.slice(ld + 1);
+  if (sig.length !== 8) return null;
+  const rest = body.slice(0, ld);
+  const pd = rest.lastIndexOf('-');
+  let expS, custom;
+  if (pd < 0) { expS = rest; custom = ''; }
+  else { expS = rest.slice(pd + 1); custom = rest.slice(0, pd); }
+  if (expS.length !== 4) return null;
+  const expH = b32_4_dec(expS);
+  if (expH < 0) return null;
+  return { custom, expH, sig };
 }
 
 async function verifyKey() {
   const out = document.getElementById('vout');
   const k = document.getElementById('vkey').value.trim().toUpperCase();
   const dev = document.getElementById('vdev').value.trim();
-  if (!k.startsWith('KMJ-')) { sfx('err'); out.innerHTML = '<span class="bad">❌ Sirf KMJ- short keys</span>'; return; }
-  const parts = k.split('-');
-  if (parts.length !== 3 || parts[1].length !== 4 || parts[2].length !== 8) {
-    sfx('err'); out.innerHTML = '<span class="bad">❌ Galat format (KMJ-XXXX-XXXXXXXX)</span>'; return;
-  }
-  const expH = b32_4_dec(parts[1]);
-  if (expH < 0) { sfx('err'); out.innerHTML = '<span class="bad">❌ Galat format</span>'; return; }
-  const expMs = expH * 3600000, left = expMs - Date.now();
+  const p = parseShort(k);
+  if (!p) { sfx('err'); out.innerHTML = '<span class="bad">❌ Bad format (KMJ-XXXX-XXXXXXXX)</span>'; return; }
+  const expMs = p.expH * 3600000, left = expMs - Date.now();
   let auth;
   if (dev) {
-    const sig = await shortSig(dev, expH);
-    const ok = sig === parts[2];
+    if (!validDev(dev)) { sfx('err'); out.innerHTML = '<span class="bad">❌ Invalid Device ID format</span>'; return; }
+    const sig = await shortSig(dev, p.custom, p.expH);
+    const ok = sig === p.sig;
     sfx(ok ? 'gen' : 'err');
-    auth = ok ? '<span class="ok">✅ ASLI KEY — isi device ki hai</span>'
-              : '<span class="bad">❌ Signature galat — nakli key ya galat Device ID</span>';
+    auth = ok ? '<span class="ok">✅ GENUINE KEY — matches this device</span>'
+              : '<span class="bad">❌ Bad signature — fake key or wrong Device ID</span>';
   } else {
-    auth = '<span class="preview">Device ID dalo to signature bhi check hogi</span>';
+    auth = '<span class="preview">Enter a Device ID to also check the signature</span>';
   }
-  out.innerHTML = auth + '<br>Expire: <b>' + ist(expMs) + '</b> (' + leftStr(left) + ')' +
+  out.innerHTML = auth +
+    '<br>Custom text: <b>' + esc(p.custom || '(none)') + '</b>' +
+    ' &bull; Expires: <b>' + ist(expMs) + '</b> (' + leftStr(left) + ')' +
     (left <= 0 ? '<br><span class="bad">⌛ EXPIRED</span>' : '');
 }
 function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
@@ -303,21 +354,21 @@ function saveHist(e) { const h = getHist(); h.unshift(e);
   localStorage.setItem('zka_history', JSON.stringify(h.slice(0, 300))); renderHist(); }
 function delHist(i) { sfx('click'); const h = getHist(); h.splice(i, 1);
   localStorage.setItem('zka_history', JSON.stringify(h)); renderHist(); }
-function clearHist() { if (confirm('Saari history delete?')) { localStorage.removeItem('zka_history'); renderHist(); } }
-function copyHist(i) { navigator.clipboard.writeText(getHist()[i].key).then(() => { sfx('copy'); alert('Key copy ✅'); }); }
+function clearHist() { if (confirm('Delete all history?')) { localStorage.removeItem('zka_history'); renderHist(); } }
+function copyHist(i) { navigator.clipboard.writeText(getHist()[i].key).then(() => { sfx('copy'); alert('Key copied ✅'); }); }
 function renderHist() {
   const all = getHist(), now = Date.now();
   const q = (document.getElementById('q').value || '').toLowerCase();
-  const h = all.filter(e => !q || (e.plan + ' ' + e.dev + ' ' + e.key).toLowerCase().includes(q));
+  const h = all.filter(e => !q || ((e.plan || '') + ' ' + e.dev + ' ' + e.key + ' ' + (e.custom || '')).toLowerCase().includes(q));
   document.getElementById('stTotal').textContent = all.length;
   document.getElementById('stActive').textContent = all.filter(e => e.exp > now).length;
   document.getElementById('stExp').textContent = all.filter(e => e.exp <= now).length;
   const el = document.getElementById('hist');
-  if (!h.length) { el.innerHTML = '<div class="hint">' + (q ? 'Kuch nahi mila.' : 'Abhi koi key nahi banayi.') + '</div>'; return; }
-  let t = '<table><tr><th>PLAN</th><th>KEY</th><th>DEVICE ID</th><th>EXPIRE (IST)</th><th>STATUS</th><th></th></tr>';
+  if (!h.length) { el.innerHTML = '<div class="hint">' + (q ? 'No matches.' : 'No keys generated yet.') + '</div>'; return; }
+  let t = '<table><tr><th>PLAN</th><th>KEY</th><th>DEVICE ID</th><th>EXPIRES (IST)</th><th>STATUS</th><th></th></tr>';
   h.forEach(e => {
     const i = all.indexOf(e), on = e.exp > now;
-    t += '<tr><td><b>' + esc(e.plan) + '</b></td>' +
+    t += '<tr><td><b>' + esc(e.plan || '') + '</b></td>' +
       '<td class="mono">' + esc(e.key) + '</td>' +
       '<td class="mono">' + esc(String(e.dev).slice(0, 16)) + '</td>' +
       '<td>' + ist(e.exp) + '<br><span class="hint">' + leftStr(e.exp - now) + '</span></td>' +
